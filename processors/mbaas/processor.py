@@ -24,7 +24,7 @@ from .utils.exceptions import (
 
 class MbaasProcessor(MessageProcessor):
     """
-    Procesador de tramas Mbaaas que transforma y extrae datos de mensajes SOAP/XML a JSON.
+    Procesador de tramas Mbaaas que transforma y extrae datos de XML a JSON.
     """
     
     def __init__(self, s3_config: Dict[str, Any]):
@@ -60,7 +60,6 @@ class MbaasProcessor(MessageProcessor):
             
         Raises:
             AttributeError: Si faltan campos requeridos.
-            KeyError: Si no se encuentran claves necesarias.
         """
         try:
             self._app_consumer_id = jmespath.search('jsonPayload.dataObject.consumer.appConsumer.id', event)
@@ -79,26 +78,26 @@ class MbaasProcessor(MessageProcessor):
         except (NoMinimumDataError,):
             raise
 
-    def _extract_soap_messages(self, event: Dict[str, Any]) -> None:
+    def _extract_xml_messages(self, event: Dict[str, Any]) -> None:
         """
-        Extrae y valida los mensajes SOAP del evento.
+        Extrae y valida los mensajes XML del evento.
         
         Args:
-            event: Evento que contiene los mensajes SOAP.
+            event: Evento que contiene los mensajes XML.
             
         Raises:
-            ParseError: Si los mensajes SOAP son inválidos.
+            ParseError: Si los mensajes XML son inválidos.
         """
         try:
-            self._soap_request = jmespath.search('jsonPayload.dataObject.messages.requestService', event)
-            self._soap_response = jmespath.search('jsonPayload.dataObject.messages.responseService', event)
+            self._xml_request = jmespath.search('jsonPayload.dataObject.messages.requestService', event)
+            self._xml_response = jmespath.search('jsonPayload.dataObject.messages.responseService', event)
             
-            if not all([self._soap_request, self._soap_response]):
-                raise ParseError("Mensajes SOAP (requestService, responseService) no pueden ser nulos.")
+            if not all([self._xml_request, self._xml_response]):
+                raise ParseError("Mensajes XML (requestService, responseService) no pueden ser nulos.")
                 
             # Extraer namespaces
-            self._namespaces['request'] = extract_namespaces(self._soap_request)
-            self._namespaces['response'] = extract_namespaces(self._soap_response)
+            self._namespaces['request'] = extract_namespaces(self._xml_request, 'request_service')
+            self._namespaces['response'] = extract_namespaces(self._xml_response, 'response_service')
             
         except ParseError:            
             raise
@@ -124,13 +123,13 @@ class MbaasProcessor(MessageProcessor):
             # Extraer y validar campos
             self._validate_and_extract_fields(self._event_data)
             
-            # Extraer mensajes SOAP
-            self._extract_soap_messages(self._event_data)
+            # Extraer mensajes XML
+            self._extract_xml_messages(self._event_data)
             
             # Transformar XML a JSON
             self._event_data['jsonPayload']['dataObject']['messages']['requestService'] = \
                 xmltodict.parse(
-                    self._soap_request,
+                    self._xml_request,
                     attr_prefix='',
                     process_namespaces=True,
                     namespaces=self._namespaces['request']
@@ -138,7 +137,7 @@ class MbaasProcessor(MessageProcessor):
                 
             self._event_data['jsonPayload']['dataObject']['messages']['responseService'] = \
                 xmltodict.parse(
-                    self._soap_response,
+                    self._xml_response,
                     attr_prefix='',
                     process_namespaces=True,
                     namespaces=self._namespaces['response']
@@ -165,12 +164,12 @@ class MbaasProcessor(MessageProcessor):
             raise InvalidEventDataError
             
         if self._app_consumer_id not in self._list_app_consumers:
-            raise AppConsumerNotFoundError(app_consumer_id=self._app_consumer_id)
+            raise AppConsumerNotFoundError(app_consumer_id=self._app_consumer_id, session_id=self._session_id)
         
         services = jmespath.search(f"app_consumer_id[?id=='{self._app_consumer_id}'].servicios[].id_service", self._s3_config)
         
         if self._id_service not in services:
-            raise ServiceNotFoundError(id_service=self._id_service, app_consumer_id=self._app_consumer_id)
+            raise ServiceNotFoundError(id_service=self._id_service, app_consumer_id=self._app_consumer_id, session_id=self._session_id)
 
         selected_vars = jmespath.search(f"app_consumer_id[?id=='{self._app_consumer_id}'][].servicios[?id_service=='{self._id_service}'].variables_seleccionadas[][]", self._s3_config)
         

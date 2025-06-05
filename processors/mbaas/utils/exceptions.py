@@ -16,9 +16,9 @@ class AppConsumerNotFoundError(MbaasProcessorError):
     """
     Se lanza cuando no se encuentra el app_consumer_id en la parametrización.
     """
-    def __init__(self, app_consumer_id: str):
+    def __init__(self, app_consumer_id: str, session_id: str):
         super().__init__(
-            message=f"App consumer '{app_consumer_id}' no está parametrizado.",
+            message=f"[session_id={session_id}] App consumer '{app_consumer_id}' no está parametrizado.",
             details={'app_consumer_id': app_consumer_id}
         )
 
@@ -26,9 +26,9 @@ class ServiceNotFoundError(MbaasProcessorError):
     """
     Se lanza cuando no se encuentra el id_service en la parametrización.
     """
-    def __init__(self, id_service: str, app_consumer_id: str):
+    def __init__(self, id_service: str, app_consumer_id: str, session_id: str):
         super().__init__(
-            message=f"Servicio '{id_service}' no está parametrizado para el app consumer '{app_consumer_id}'",
+            message=f"[session_id={session_id}] Servicio '{id_service}' no está parametrizado para el app consumer '{app_consumer_id}'",
             details={
                 'id_service': id_service,
                 'app_consumer_id': app_consumer_id
