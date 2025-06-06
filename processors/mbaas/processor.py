@@ -2,7 +2,6 @@
 
 import jmespath
 import json
-import xmltodict
 import xml.parsers.expat
 
 from xml.etree.ElementTree import ParseError
@@ -10,7 +9,7 @@ from pydantic import ValidationError
 from typing import Dict, Any, Optional
 
 from ...core.interfaces.message_processor import MessageProcessor
-from ...utils.namespaces import extract_namespaces
+from ...utils.namespaces import xml_to_dict_lxml
 from .utils.models import EventEntry
 from .utils.message import extract_from_message_selected_fields
 from .utils.exceptions import (
@@ -46,10 +45,6 @@ class MbaasProcessor(MessageProcessor):
         self._tidnid = None
         self._id_service = None
         self._event_data: Optional[Dict[str, Any]] = None
-        self._namespaces = {
-            'request': None,
-            'response': None
-        }
 
     def _validate_and_extract_fields(self, event: Dict[str, Any]) -> None:
         """
@@ -94,10 +89,6 @@ class MbaasProcessor(MessageProcessor):
             
             if not all([self._xml_request, self._xml_response]):
                 raise ParseError("Mensajes XML (requestService, responseService) no pueden ser nulos.")
-                
-            # Extraer namespaces
-            self._namespaces['request'] = extract_namespaces(self._xml_request, 'request_service')
-            self._namespaces['response'] = extract_namespaces(self._xml_response, 'response_service')
             
         except ParseError:            
             raise
@@ -128,20 +119,10 @@ class MbaasProcessor(MessageProcessor):
             
             # Transformar XML a JSON
             self._event_data['jsonPayload']['dataObject']['messages']['requestService'] = \
-                xmltodict.parse(
-                    self._xml_request,
-                    attr_prefix='',
-                    process_namespaces=True,
-                    namespaces=self._namespaces['request']
-                )
+                xml_to_dict_lxml(self._xml_request, 'request_service')
                 
             self._event_data['jsonPayload']['dataObject']['messages']['responseService'] = \
-                xmltodict.parse(
-                    self._xml_response,
-                    attr_prefix='',
-                    process_namespaces=True,
-                    namespaces=self._namespaces['response']
-                )
+                xml_to_dict_lxml(self._xml_response, 'response_service')
             
             return self._event_data
             
