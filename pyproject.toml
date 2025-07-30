@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "obs_layer_data_process"
+version = "0.1.0"
+description = "Procesamiento de datos de fuentes como Stratus, Postilion, Mbaas."
+authors = ["Joan Sebastian Tamayo Rivera"]
+license = "Proprietary"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.10.3"
+flatten-json = "^0.1.14"
+python-dotenv = "^1.0.1"
+boto3 = "^1.35.79"
+jmespath = "^1.0.1"
+psycopg2-binary = "^2.9.10"
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+jq = "^1.8.0"
+lxml = "^5.4.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
