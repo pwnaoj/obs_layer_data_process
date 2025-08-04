@@ -35,7 +35,8 @@ class ScalableStratusProcessor(MessageProcessor):
             self._event_data = {field.name: StratusConfig.extract_field(event, field.name) 
                                 for field in StratusConfig.ACF_FIELDS}
             
-        except (MessageLengthError,):           
+        except MessageLengthError as e:
+            logger.error(f"Error de longitud de mensaje: {str(e)}")
             raise
         
     def _get_campaigns(self, s3_file: Dict, motivo_concepto: str, canal: str, codigo_trx: str) -> List[Dict[str, Any]]:
@@ -112,5 +113,9 @@ class ScalableStratusProcessor(MessageProcessor):
             data = [extract_from_scalable_messages_selected_fields(campaign, event_data) for campaign in campaigns]
             
             return data
-        except (InvalidEventDataError,):
+        except InvalidEventDataError as e:
+            logger.error(f"Datos inválidos: {str(e)}")
+            raise
+        except NoCampaignsFoundError as e:
+            logger.error(f"No se encontraron campañas configuradas: {str(e)}")
             raise

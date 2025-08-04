@@ -41,7 +41,7 @@ class NoMinimumDataError(MbaasWorkflowProcessorError):
     """
     def __init__(self, list_app_consumer: List[str], app_consumer_id: str, id_service: str, session_id: str, entity: str):
         super().__init__(
-            message=f"Los campos list_app_consumers, app_consumer_id, id_service, session_id o entity no tiene un valor válido.",
+            message="Los campos list_app_consumers, app_consumer_id, id_service, session_id o entity no tiene un valor válido.",
             details={
                 'list_app_consumer': list_app_consumer,
                 'app_consumer_id': app_consumer_id,

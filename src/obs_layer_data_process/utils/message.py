@@ -59,7 +59,7 @@ def generate_deduplication_id(event: dict) -> str:
     """
     event_str = json.dumps(event, sort_keys=True)
     
-    return hashlib.md5(event_str.encode('utf-8')).hexdigest()
+    return hashlib.sha512(event_str.encode('utf-8')).hexdigest()
 
 def get_group_id(event: dict) -> str:
     """

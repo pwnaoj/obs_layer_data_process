@@ -29,7 +29,8 @@ def extract_from_message_selected_fields(s3_config: dict, message: str, message_
             
             if is_priority:
                 yield(field, message[field])
-    except (NoS3FileLoadedError,):
+    except NoS3FileLoadedError as e:
+        logger.error(f"Archivo de parametrización no cargado: {str(e)}")
         raise
 
 def extract_from_scalable_messages_selected_fields(campaign: dict, message: str):
@@ -48,5 +49,6 @@ def extract_from_scalable_messages_selected_fields(campaign: dict, message: str)
         
         return campaign
 
-    except (ValueError,):
+    except ValueError as e:
+        logger.error(f"Error procesando variables de campaña '{campaign.get('id_campaign')}': {str(e)}")
         raise

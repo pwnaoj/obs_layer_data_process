@@ -9,6 +9,7 @@ from pydantic import ValidationError
 from typing import Dict, Any, Optional
 
 from ...core.interfaces.message_processor import MessageProcessor
+from ...utils.log import logger
 from ...utils.xml import xml_to_dict_lxml
 from .utils.models import EventEntry
 from .utils.jmespath import extract_from_message_selected_fields
@@ -70,7 +71,8 @@ class MbaasProcessor(MessageProcessor):
                         self._session_id
                     )
                 
-        except (NoMinimumDataError,):
+        except NoMinimumDataError as e:
+            logger.error(f"Datos mínumos no encontrados: {str(e)}")
             raise
 
     def _extract_xml_messages(self, event: Dict[str, Any]) -> None:
@@ -90,7 +92,8 @@ class MbaasProcessor(MessageProcessor):
             if not any([self._xml_request, self._xml_response]):
                 raise ParseError("Mensajes XML (requestService, responseService) no pueden ser nulos.")
             
-        except ParseError:            
+        except ParseError as e:
+            logger.error(f"Error en mensajes XML: {str(e)}")
             raise
 
     def process(self, message: str) -> Dict[str, Any]:
@@ -126,7 +129,14 @@ class MbaasProcessor(MessageProcessor):
             
             return self._event_data
             
-        except (ValidationError, xml.parsers.expat.ExpatError, json.JSONDecodeError):          
+        except ValidationError as e:
+            logger.error(f"Error de validación: {e}")
+            raise
+        except xml.parsers.expat.ExpatError as e:
+            logger.error(f"Error en procesamiento XML: {e}")
+            raise
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decodificando JSON: {e}")
             raise
 
     def extract(self, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:

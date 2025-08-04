@@ -18,7 +18,7 @@ class MessageLengthError(StratusProcessorError):
     """
     def __init__(self, message: str):
         super().__init__(
-            message=f"La trama no cumple con la longitud requerida para ser procesada.",
+            message="La trama no cumple con la longitud requerida para ser procesada.",
             details={'Longitud Trama': len(message)}
         )
         
@@ -37,7 +37,7 @@ class NoS3FileLoadedError(StratusProcessorError):
     """
     def __init__(self):
         super().__init__(
-            message=f"No está cargado el archivo de parametrización de Stratus."
+            message="No está cargado el archivo de parametrización de Stratus."
         )
 
 class NoVariablesConfiguredError(StratusProcessorError):
@@ -46,7 +46,7 @@ class NoVariablesConfiguredError(StratusProcessorError):
     """
     def __init__(self):
         super().__init__(
-            message=f"No hay variables configuradas para extraer."
+            message="No hay variables configuradas para extraer."
         )
 
 class NoCampaignsFoundError(StratusProcessorError):
@@ -55,7 +55,7 @@ class NoCampaignsFoundError(StratusProcessorError):
     """
     def __init__(self):
         super().__init__(
-            message=f"No hay campañas elegibles para extraer."
+            message="No hay campañas elegibles para extraer."
         )
 
 class UnsupportedMessageTypeError(StratusProcessorError):
@@ -65,5 +65,5 @@ class UnsupportedMessageTypeError(StratusProcessorError):
     """
     def __init__(self):
         super().__init__(
-            message=f"Mensaje no corresponde a trama ACF o AFD."
+            message="Mensaje no corresponde a trama ACF o AFD."
         )

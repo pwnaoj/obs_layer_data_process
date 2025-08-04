@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from typing import Dict, Any, Optional
 
 from ...core.interfaces.message_processor import MessageProcessor
+from ...utils.log import logger
 from .utils.models import WorkflowEntry
 from .utils.jmespath import extract_from_message_selected_fields
 from .utils.exceptions import (
@@ -72,7 +73,8 @@ class WorkflowProcessor(MessageProcessor):
                         self._entity
                     )
                 
-        except (NoMinimumDataError,):
+        except NoMinimumDataError as e:
+            logger.error(f"Datos mínimos no encontrados: {str(e)}")
             raise
 
     def _extract_transaction_data(self, event: Dict[str, Any]) -> None:
@@ -91,7 +93,8 @@ class WorkflowProcessor(MessageProcessor):
             if not all([self._transaction_data]):
                 raise NoTransactionDataFound
             
-        except NoTransactionDataFound:
+        except NoTransactionDataFound as e:
+            logger.error(f"Datos de 'transactionData' no encontrados: {str(e)}")
             raise
 
     def process(self, message: str) -> Dict[str, Any]:
@@ -120,7 +123,11 @@ class WorkflowProcessor(MessageProcessor):
             
             return self._event_data
             
-        except (ValidationError, json.JSONDecodeError):          
+        except ValidationError as e:
+            logger.error(f"Error de validación de estructura: {str(e)}")
+            raise
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decodificando JSON: {str(e)}")
             raise
 
     def extract(self, data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:

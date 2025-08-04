@@ -96,5 +96,6 @@ def xml_to_dict_lxml(xml_string: str, type_service: str) -> dict:
             # Crear diccionario con el elemento raíz (manejo seguro de prefijos)
             root_tag = get_local_name(root.tag)
             return {root_tag: lxml_element_to_dict(root)}
-    except Exception:
+    except Exception as e:
+        logger.error(f"Error al intentar parsear XML: {str(e)}")
         raise

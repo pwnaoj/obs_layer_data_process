@@ -45,7 +45,11 @@ class StratusProcessor(MessageProcessor):
             self._event_data = {field.name: StratusConfig.extract_field(event, field.name, self._message_type) 
                                 for field in fields}
             
-        except (MessageLengthError, UnsupportedMessageTypeError):           
+        except MessageLengthError as e:
+            logger.error(f"Error de longitud de mensaje: {str(e)}")
+            raise
+        except UnsupportedMessageTypeError as e:
+            logger.error(f"Tipo de mensaje no soportado: {str(e)}")
             raise
 
     def process(self, message: str) -> Dict[str, Any]:
@@ -84,5 +88,6 @@ class StratusProcessor(MessageProcessor):
                 message=event_data,
                 message_type=self._message_type
             ))
-        except (InvalidEventDataError,):
+        except InvalidEventDataError as e:
+            logger.error(f"Datos inválidos: {str(e)}")
             raise

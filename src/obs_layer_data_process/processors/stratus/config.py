@@ -39,607 +39,595 @@ class StratusConfig:
         MessageType.AFD: 1003
     }
     
+    @staticmethod
+    def create_field_definition(name, length, position, field_type, description=None):
+        """
+        Crea una instancia de FieldDefinition con los parámetros especificados.
+
+        Args:
+            name (str): Nombre del campo.
+            length (int): Longitud del campo.
+            position (int): Posición del campo en el mensaje.
+            field_type (FieldType): Tipo de campo.
+            description (str, optional): Descripción del campo. Defaults to None.
+
+        Returns:
+            FieldDefinition: Definición del campo.
+        """
+        return FieldDefinition(
+            name=name,
+            length=length,
+            position=position,
+            field_type=field_type,
+            description=description
+        )
+    
     # Diccionario de campos de la trama ACF
     ACF_FIELDS: List[FieldDefinition] = [
-        FieldDefinition(
-        name="ByteI",
-        length=5,
-        position=1,
-        field_type=FieldType.ALPHANUMERIC
-        ),
-        FieldDefinition(
-            name="Constante",
-            length=1,
-            position=6,
-            field_type=FieldType.ALPHANUMERIC
-        ),
-        FieldDefinition(
-            name="DiaSistema",
-            length=2,
-            position=7,
-            field_type=FieldType.NUMERIC
-        ),
-        FieldDefinition(
-            name="MesSistema",
-            length=2,
-            position=9,
-            field_type=FieldType.NUMERIC
-        ),
-        FieldDefinition(
-            name="AnioSistema",
-            length=4,
-            position=11,
-            field_type=FieldType.NUMERIC
-        ),
-        FieldDefinition(
-            name="HoraSistema",
-            length=2,
-            position=15,
-            field_type=FieldType.NUMERIC
-        ),
-        FieldDefinition(
-            name="MinutoSistema",
-            length=2,
-            position=17,
-            field_type=FieldType.NUMERIC
-        ),
-        FieldDefinition(
+        create_field_definition("ByteI", 5, 1, FieldType.ALPHANUMERIC),
+        create_field_definition("Constante", 1, 6, FieldType.ALPHANUMERIC),
+        create_field_definition("DiaSistema", 2, 7, FieldType.NUMERIC),
+        create_field_definition("MesSistema", 2, 9, FieldType.NUMERIC),
+        create_field_definition("AnioSistema", 4, 11, FieldType.NUMERIC),
+        create_field_definition("HoraSistema", 2, 15, FieldType.NUMERIC),
+        create_field_definition("MinutoSistema", 2, 17, FieldType.NUMERIC),
+        create_field_definition(
             name="ConstanteKey",
             length=5,
             position=19,
             field_type=FieldType.ALPHANUMERIC,
             description="Campo para identificar la trama ACF con los siguientes códigos '00745' OR '0074'"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ConstanteBanco",
             length=10,
             position=24,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoMensaje",
             length=4,
             position=34,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoTarjetaTj",
             length=2,
             position=38,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="RestoTarjeta",
             length=17,
             position=40,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoTransaccionB24",
             length=2,
             position=57,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoCuenta",
             length=4,
             position=59,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicadorReverso",
             length=1,
             position=63,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ValorTransaccion",
             length=14,
             position=64,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ImporteTransaccion",
             length=14,
             position=78,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaTrans",
             length=8,
             position=92,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="HoraTrans",
             length=6,
             position=100,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TasaConversion",
             length=11,
             position=106,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TalonTransaccion",
             length=6,
             position=117,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="HoraTransaccion",
             length=6,
             position=123,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaTransaccion",
             length=8,
             position=129,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaVencimientoTar",
             length=4,
             position=137,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ModosProcesamiento",
             length=1,
             position=141,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaAplicacion",
             length=8,
             position=142,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoAdqComercio",
             length=4,
             position=157,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoPaisInstAdq",
             length=3,
             position=154,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoPaisTarjeta",
             length=3,
             position=157,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoPaisInstEmisor",
             length=3,
             position=160,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ModoEntrada",
             length=2,
             position=163,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CondicionPOS",
             length=2,
             position=165,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroPrincipalTarje",
             length=19,
             position=167,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoCondicionPOS",
             length=2,
             position=186,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SectorActComercio",
             length=4,
             position=188,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoIdentificaAdq",
             length=11,
             position=192,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoIdentificaEmisor",
             length=11,
             position=203,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroAutorizacion",
             length=8,
             position=214,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoRespuesta",
             length=4,
             position=222,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoServicio",
             length=3,
             position=226,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoTerminal",
             length=8,
             position=229,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoComercio",
             length=15,
             position=237,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NombreComercio",
             length=25,
             position=252,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="LocalidadComercio",
             length=13,
             position=277,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="PaisOrigenTransac",
             length=3,
             position=290,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoTarjeta",
             length=2,
             position=293,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NombreClienteTrack1",
             length=25,
             position=295,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NombreClienteBuc",
             length=25,
             position=320,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoMonedaTrx",
             length=3,
             position=345,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoMonedaTitular",
             length=3,
             position=348,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SaldoDisponible",
             length=14,
             position=351,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="PosicionGPS",
             length=14,
             position=365,
             field_type=FieldType.ALPHANUMERIC,
             description="Campo por cod_subproducto (entregados de la tabla 'sbl_productos_y_servicios"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CupoTarjeta",
             length=12,
             position=379,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CuentaOrigen",
             length=23,
             position=391,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CuentaDestino",
             length=23,
             position=414,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="BinTarjeta",
             length=6,
             position=437,
             field_type=FieldType.ALPHANUMERIC,
             description="No. tarjeta (identificados en la tabla 'sbl_fact_saldos')"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="BinLiquidadorBanco",
             length=6,
             position=443,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="EstadoTarjeta",
             length=10,
             position=449,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndTarjetaEmpleado",
             length=1,
             position=459,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndTarjetaAmparada",
             length=1,
             position=460,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ValorMaxCompras",
             length=12,
             position=461,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroPuntos",
             length=12,
             position=473,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="OficinaRadicaTarjeta",
             length=6,
             position=485,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoIdentificaCliente",
             length=16,
             position=491,
             field_type=FieldType.NUMERIC,
             description="Nro de identificación de persona que hace el pago"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="PrimerNombreCliente",
             length=12,
             position=507,
             field_type=FieldType.ALPHANUMERIC,
             description="Primer Nombre persona que hace el pago"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SegundoNombreCliente",
             length=12,
             position=519,
             field_type=FieldType.ALPHANUMERIC,
             description="Segundo Nombre persona que hace el pago"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="PrimerApellidoCliente",
             length=12,
             position=531,
             field_type=FieldType.ALPHANUMERIC,
             description="Primer Apellido persona que hace el pago"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SegundoApellidoCliente",
             length=12,
             position=543,
             field_type=FieldType.ALPHANUMERIC,
             description="Segundo Apellido persona que hace el pago"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroIdentificaCliente",
             length=16,
             position=555,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaNacimiento",
             length=8,
             position=571,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="EstadoCivil",
             length=12,
             position=579,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DireccionCorresponden",
             length=35,
             position=591,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CorreoElectronico",
             length=35,
             position=626,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoResidencia",
             length=12,
             position=661,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoOficina",
             length=12,
             position=673,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoCorresponden",
             length=12,
             position=685,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoCelular",
             length=12,
             position=697,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Usuario",
             length=12,
             position=709,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="OficinaRecaudo",
             length=4,
             position=721,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroCuenta",
             length=19,
             position=725,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoIdentificacion",
             length=3,
             position=744,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoCanal",
             length=6,
             position=747,
             field_type=FieldType.NUMERIC,
             description="Campo para identificar las transacciones en oficina con el código '000000'"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MedioTransaccional",
             length=4,
             position=753,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MotivoConcepto",
             length=4,
             position=757,
             field_type=FieldType.NUMERIC,
             description="Campo para identificar los conceptos de transacción (cod_doc_funcional)"
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoSupervisor",
             length=12,
             position=761,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ValorCheque",
             length=14,
             position=773,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="LimiteDiarioCompras",
             length=6,
             position=787,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ValorDiarioRetiros",
             length=6,
             position=793,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CantDiariaRetiros",
             length=6,
             position=799,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="PaisTarjeta",
             length=22,
             position=813,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="BinVencimiento",
             length=10,
             position=835,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="OficinaTarjeta",
             length=22,
             position=845,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoComerciosPais",
             length=18,
             position=867,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicadorFraude",
             length=1,
             position=885,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ConstanteUno",
             length=1,
             position=886,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SignoSaldoDisponible",
             length=1,
             position=887,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Afinidad",
             length=1,
             position=888,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Filler",
             length=47,
             position=889,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ByteF",
             length=5,
             position=936,
@@ -648,589 +636,589 @@ class StratusConfig:
     ]
     
     AFD_FIELDS: List[FieldDefinition] = [
-        FieldDefinition(
+        create_field_definition(
             name="ByteI", 
             length=5,
             position=1,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ModoAnalisis", 
             length=1,
             position=6,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DiaSistema", 
             length=2,
             position=7,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MesSistema",
             length=2,
             position=9,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="AnioSistema",
             length=4,
             position=11, 
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="HoraSistema",
             length=2,
             position=15,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MinutoSistema",
             length=2,
             position=17,
             field_type=FieldType.NUMERIC
             ),
-        FieldDefinition(
+        create_field_definition(
             name="CodigoKey",
             length=5,
             position=19,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="UsuarioEmisor",
             length=10,
             position=24,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IdCliente",
             length=18,
             position=34,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodEntidad",
             length=4,
             position=52,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodTrx",
             length=6,
             position=56,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="GrupoTrx", 
             length=2,
             position=62,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroCuenta", 
             length=16,
             position=64,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SucursalTrx", 
             length=4,
             position=80,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="RegionSucursal", 
             length=4,
             position=84,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodProd", 
             length=4,
             position=88,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodSubprod", 
             length=4,
             position=92,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroTrx", 
             length=16,
             position=96,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodRespuesta",
             length=4,
             position=112,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodRechazo",
             length=4,
             position=116,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoPersona",
             length=1,
             position=120,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaReverso",
             length=1,
             position=121,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaTrx",
             length=8,
             position=122,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="HoraTrx",
             length=6,
             position=130,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ModoProceso",
             length=1,
             position=136,
             field_type=FieldType.ALPHANUMERIC
             ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaHoraTrx",
             length=14,
             position=137,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodMonedaTrx",
             length=3,
             position=151,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MontoTotalTrx",
             length=17,
             position=154,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MontoEfectivo",
             length=17,
             position=171,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MontoChqPropio",
             length=17,
             position=188,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MontoChqAjeno",
             length=17,
             position=205,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroCuentaOri",
             length=25,
             position=222,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroCuentaDest",
             length=25,
             position=247,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CanalMedio",
             length=4,
             position=272,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MotivoConcepto",
             length=4,
             position=276,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DebitoCreditoOtra",
             length=1,
             position=280,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="EstadoCtaProducto",
             length=1,
             position=281,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NoDocumento",
             length=12,
             position=282,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoChequera",
             length=1,
             position=294,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumIniTalonarioAh",
             length=11,
             position=295,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumFinTalonarioAh",
             length=11,
             position=306,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MaxComproTalonaAh",
             length=11,
             position=317,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroIniChequera",
             length=11,
             position=328,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroFinChequera",
             length=11,
             position=339,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MaxComproChequera",
             length=11,
             position=350,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaChequeCompe",
             length=1,
             position=361,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaCompensacion",
             length=8,
             position=362,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SignoValor",
             length=1,
             position=370,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SaldoDisponible",
             length=17,
             position=371,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Localidad",
             length=30,
             position=388,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaAperProd",
             length=8,
             position=418,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroTerminal",
             length=10,
             position=426,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodClienteOri",
             length=12,
             position=436,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodClienteDest",
             length=12,
             position=448,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IdClienteDest",
             length=18,
             position=460,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SucurAperCuenta",
             length=4,
             position=478,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="SucurAperDest",
             length=4,
             position=482,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="EntidadAdquire",
             length=11,
             position=486,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaEmpleCtaOri",
             length=1,
             position=497,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaEmpleCtaDest",
             length=1,
             position=498,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodIdBancoDest",
             length=11,
             position=499,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NumeroReferen",
             length=20,
             position=510,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoPagoServ",
             length=6,
             position=530,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="FechaVinculaClien",
             length=8,
             position=536,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodUsuario",
             length=12,
             position=544,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodEmpleado",
             length=12,
             position=556,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodUsuarioAutori",
             length=12,
             position=568,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CodUsuarioCofirma",
             length=12,
             position=580,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="MontoSobgiroAutorizado",
             length=17,
             position=592,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaSobregiro",
             length=2,
             position=609,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoCliente",
             length=2,
             position=611,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaCuentaRegis",
             length=2,
             position=613,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="KeyTransfeInterbanca",
             length=20,
             position=615,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IdRastreoTransfe",
             length=12,
             position=635,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DirecIP",
             length=15,
             position=647,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DirecIPInscrita",
             length=15,
             position=662,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NombClienTitularCtaOri",
             length=40,
             position=677,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="NombClienTitularCtaDest",
             length=40,
             position=717,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="DirecDomicilio",
             length=40,
             position=757,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoResidencia",
             length=18,
             position=797,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoOficina",
             length=18,
             position=815,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TelefonoOtro",
             length=18,
             position=833,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CorreoEmail",
             length=40,
             position=851,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Filler1",
             length=30,
             position=891,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="TipoPro",
             length=8,
             position=921,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="RedOrig",
             length=8,
             position=929,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IndicaFraude",
             length=1,
             position=937,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="OrigenAlerta",
             length=6,
             position=938,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="IdTrxFraude",
             length=15,
             position=944,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CountMesTransCtaOriDest",
             length=9,
             position=959,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CountDiarioLlave4Ant",
             length=9,
             position=968,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CountMensualLlave11Ant",
             length=9,
             position=977,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="CampoValor",
             length=1,
             position=986,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="Coincidencias",
             length=9,
             position=987,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="LocalInternacional",
             length=1,
             position=996,
             field_type=FieldType.ALPHANUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="RangoMonto",
             length=2,
             position=997,
             field_type=FieldType.NUMERIC
         ),
-        FieldDefinition(
+        create_field_definition(
             name="ByteF",
             length=5,
             position=999,
