@@ -26,7 +26,7 @@ class InvalidEventDataError(StratusProcessorError):
     """
     Se lanza cuando los datos del evento son inválidos o están incompletos.
     """
-    def __init__(self, detail: str):
+    def __init__(self, detail: str = "Datos del evento no disponibles"):
         super().__init__(
             message=f"Datos del evento inválidos o incompletos: {detail}"
         )
