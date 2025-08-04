@@ -74,9 +74,9 @@ class TestStratusMessage(unittest.TestCase):
     
     def test_extract_from_scalable_messages_selected_fields_error(self):
         # Caso con error
-        campaign = {"id_campaign": "campaign1", "variables": {"field1": "value1"}}
+        campaign = {"id_campaign": "campaign1", "variables": ["field1"]}
         message = {}  # Campo no existente generará KeyError
         
         with patch('src.obs_layer_data_process.processors.stratus.utils.message.logger') as mock_logger:
-            with self.assertRaises(ValueError):
+            with self.assertRaises(KeyError):  # ✅ KeyError en lugar de ValueError
                 extract_from_scalable_messages_selected_fields(campaign, message)
