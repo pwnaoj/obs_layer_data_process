@@ -2,6 +2,7 @@
 
 import unittest
 
+from lxml import etree
 from unittest.mock import patch, MagicMock
 
 from src.obs_layer_data_process.utils.xml import (
@@ -34,38 +35,58 @@ class TestXmlUtils(unittest.TestCase):
         # Tag con namespace URI (formato lxml)
         self.assertEqual(get_local_name("{http://example.com/}LocalName"), "LocalName")
     
-    # Corregido: usar patch para mockear lxml.etree.fromstring
+    def test_lxml_element_to_dict(self):
+        # Elemento con atributos
+        element = etree.Element("root", {"attr": "value"})
+        result = lxml_element_to_dict(element)
+        self.assertEqual(result, {"attr": "value"})
+        
+        # Elemento con texto
+        element = etree.Element("root")
+        element.text = "text content"
+        self.assertEqual(lxml_element_to_dict(element), "text content")
+        
+        # Elemento con hijos
+        parent = etree.Element("parent")
+        child1 = etree.SubElement(parent, "child1")
+        child1.text = "value1"
+        child2 = etree.SubElement(parent, "child2")
+        child2.text = "value2"
+        result = lxml_element_to_dict(parent)
+        self.assertEqual(result, {"child1": "value1", "child2": "value2"})
+        
+        # Elemento con hijos repetidos
+        parent = etree.Element("parent")
+        child1 = etree.SubElement(parent, "child")
+        child1.text = "value1"
+        child2 = etree.SubElement(parent, "child")
+        child2.text = "value2"
+        result = lxml_element_to_dict(parent)
+        self.assertEqual(result, {"child": ["value1", "value2"]})
+    
+    @patch('src.obs_layer_data_process.utils.xml.is_valid_xml')
     @patch('src.obs_layer_data_process.utils.xml.etree')
-    def test_xml_to_dict_lxml(self, mock_etree):
-        # Configurar el mock para evitar la conversión real de XML
+    def test_xml_to_dict_lxml(self, mock_etree, mock_is_valid):
+        # Configurar mocks
+        mock_is_valid.return_value = True
         mock_root = MagicMock()
+        mock_root.tag = "root"
         mock_etree.fromstring.return_value = mock_root
         
-        # Configurar el comportamiento del mock para devolver la estructura esperada
-        mock_root.tag = "root"
-        mock_child = MagicMock()
-        mock_child.tag = "child"
-        mock_child.text = "valor"
-        mock_child.attrib = {}
-        mock_child.__iter__ = lambda self: iter([])
-        
-        mock_root.__iter__ = lambda self: iter([mock_child])
-        mock_root.attrib = {}
-        mock_root.text = None
-        
-        # Hacer que lxml_element_to_dict devuelva valores simulados
+        # Patch para lxml_element_to_dict
         with patch('src.obs_layer_data_process.utils.xml.lxml_element_to_dict') as mock_to_dict:
-            mock_to_dict.return_value = {"child": "valor"}
+            mock_to_dict.return_value = {"child": "value"}
             
-            # XML simple
-            xml = "<root><child>valor</child></root>"
-            result = xml_to_dict_lxml(xml, "request")
+            # Caso éxito
+            result = xml_to_dict_lxml("<root><child>value</child></root>", "request")
+            self.assertEqual(result, {"root": {"child": "value"}})
             
-            # Solo verificamos que la función se comporta según lo esperado
-            self.assertIsNotNone(result)
-            mock_etree.fromstring.assert_called_once()
-            mock_to_dict.assert_called_once()
-
-
-if __name__ == '__main__':
-    unittest.main()
+            # Caso XML inválido
+            mock_is_valid.return_value = False
+            self.assertIsNone(xml_to_dict_lxml("invalid", "request"))
+            
+            # Caso excepción
+            mock_is_valid.return_value = True
+            mock_etree.fromstring.side_effect = Exception("error")
+            with self.assertRaises(Exception):
+                xml_to_dict_lxml("<root></root>", "request")

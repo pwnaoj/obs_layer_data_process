@@ -5,6 +5,7 @@ import jmespath
 import unittest
 
 from unittest.mock import patch, MagicMock
+from pydantic import ValidationError
 
 from src.obs_layer_data_process.processors.workflow.processor import WorkflowProcessor
 from src.obs_layer_data_process.processors.workflow.utils.exceptions import (
@@ -16,12 +17,12 @@ from src.obs_layer_data_process.processors.workflow.utils.exceptions import (
 class TestWorkflowProcessor(unittest.TestCase):
     
     def setUp(self):
-        self.s3_config = {"test": "config"}
+        self.s3_config = [{"id": "app_id_1", "services": [{"id_service": "service_1"}]}]
         self.processor = WorkflowProcessor(self.s3_config)
     
     @patch('jmespath.search')
     def test_validate_and_extract_fields_success(self, mock_search):
-        # Configurar mock para devolver datos válidos
+        # Configurar mock
         def mock_search_side_effect(query, data):
             if 'sessionId' in query:
                 return "session_1"
@@ -50,11 +51,11 @@ class TestWorkflowProcessor(unittest.TestCase):
     
     @patch('jmespath.search')
     def test_validate_and_extract_fields_missing_data(self, mock_search):
-        # Configurar mock para devolver datos incompletos
+        # Datos incompletos
         mock_search.return_value = None
         self.processor._list_app_consumers = ["app_id_1"]
         
-        # Verificar que se lanza la excepción correcta
+        # Verificar excepción
         with patch('src.obs_layer_data_process.processors.workflow.utils.exceptions.NoMinimumDataError.__init__', 
                   return_value=None):
             with self.assertRaises(NoMinimumDataError):
@@ -62,7 +63,7 @@ class TestWorkflowProcessor(unittest.TestCase):
     
     @patch('jmespath.search')
     def test_extract_transaction_data_success(self, mock_search):
-        # Configurar mock para devolver datos de transacción
+        # Configurar mock
         mock_search.return_value = {"field1": "value1"}
         
         # Ejecutar método
@@ -73,10 +74,10 @@ class TestWorkflowProcessor(unittest.TestCase):
     
     @patch('jmespath.search')
     def test_extract_transaction_data_missing(self, mock_search):
-        # Configurar mock para devolver None
+        # Sin datos de transacción
         mock_search.return_value = None
         
-        # Verificar que se lanza la excepción correcta
+        # Verificar excepción
         with patch('src.obs_layer_data_process.processors.workflow.utils.exceptions.NoTransactionDataFound.__init__', 
                   return_value=None):
             with self.assertRaises(NoTransactionDataFound):
@@ -89,7 +90,7 @@ class TestWorkflowProcessor(unittest.TestCase):
         mock_loads.return_value = {"test": "data"}
         mock_validate.return_value.model_dump.return_value = {"test": "data"}
         
-        # Mock de métodos internos
+        # Mock métodos internos
         with patch.object(WorkflowProcessor, '_validate_and_extract_fields') as mock_validate_fields, \
              patch.object(WorkflowProcessor, '_extract_transaction_data') as mock_extract_data:
             
@@ -101,32 +102,99 @@ class TestWorkflowProcessor(unittest.TestCase):
             mock_validate_fields.assert_called_once()
             mock_extract_data.assert_called_once()
     
+    def test_process_validation_error(self):
+        # Mock para ValidationError
+        with patch('json.loads') as mock_loads, \
+             patch('src.obs_layer_data_process.processors.workflow.utils.models.WorkflowEntry.model_validate') as mock_validate:
+            
+            mock_loads.return_value = {"test": "data"}
+            mock_validate.side_effect = ValidationError.from_exception_data("error", [])
+            
+            # Verificar excepción
+            with self.assertRaises(ValidationError):
+                self.processor.process('{"test": "data"}')
+    
+    def test_process_json_decode_error(self):
+        # Verificar excepción con JSON inválido
+        with self.assertRaises(json.JSONDecodeError):
+            self.processor.process('{invalid json}')
+    
+    @patch('src.obs_layer_data_process.processors.workflow.utils.jmespath.extract_from_message_selected_fields')
     @patch('jmespath.search')
-    def test_extract_success(self, mock_search):
+    def test_extract_success(self, mock_search, mock_extract):
         # Configurar mocks
         def mock_search_side_effect(query, data):
-            if '[?id==\'app_id_1\'].services[].id_service' in query:
+            if 'services[].id_service' in query:
                 return ["service_1"]
             elif 'paths[]' in query:
-                return [["path1", "true"], ["path2", "true"]]
+                return [["path1", "true"]]
+            return None
+        
+        mock_search.side_effect = mock_search_side_effect
+        mock_extract.return_value = [("path1", "value1")]
+        
+        # Establecer datos
+        self.processor._transaction_data = {"field1": "value1"}
+        self.processor._app_consumer_id = "app_id_1"
+        self.processor._id_service = "service_1"
+        self.processor._list_app_consumers = ["app_id_1"]
+        
+        # Ejecutar método
+        result = self.processor.extract()
+        
+        # Verificar resultado
+        self.assertEqual(result, {"path1": "value1"})
+        mock_extract.assert_called_once()
+    
+    def test_extract_no_data(self):
+        # Sin datos
+        self.processor._transaction_data = None
+        
+        # Verificar excepción
+        with self.assertRaises(InvalidEventDataError):
+            self.processor.extract()
+    
+    def test_extract_app_consumer_not_found(self):
+        # App consumer no encontrado
+        self.processor._transaction_data = {"field1": "value1"}
+        self.processor._app_consumer_id = "not_found"
+        self.processor._list_app_consumers = ["app_id_1"]
+        
+        # Verificar excepción
+        with self.assertRaises(AppConsumerNotFoundError):
+            self.processor.extract()
+    
+    @patch('jmespath.search')
+    def test_extract_service_not_found(self, mock_search):
+        # Service no encontrado
+        mock_search.return_value = ["other_service"]
+        
+        self.processor._transaction_data = {"field1": "value1"}
+        self.processor._app_consumer_id = "app_id_1"
+        self.processor._id_service = "service_1"
+        self.processor._list_app_consumers = ["app_id_1"]
+        
+        # Verificar excepción
+        with self.assertRaises(ServiceNotFoundError):
+            self.processor.extract()
+    
+    @patch('jmespath.search')
+    def test_extract_no_variables(self, mock_search):
+        # Sin variables configuradas
+        def mock_search_side_effect(query, data):
+            if 'services[].id_service' in query:
+                return ["service_1"]
+            elif 'paths[]' in query:
+                return None
             return None
         
         mock_search.side_effect = mock_search_side_effect
         
-        # Mock para extract_from_message_selected_fields
-        with patch('src.obs_layer_data_process.processors.workflow.utils.jmespath.extract_from_message_selected_fields') as mock_extract:
-            # Configurar retorno
-            mock_extract.return_value = [("path1", "value1"), ("path2", "value2")]
-            
-            # Establecer datos
-            self.processor._transaction_data = {"field1": "value1"}
-            self.processor._app_consumer_id = "app_id_1"
-            self.processor._id_service = "service_1"
-            self.processor._list_app_consumers = ["app_id_1"]
-            
-            # Ejecutar método
-            result = self.processor.extract()
-            
-            # Verificar resultado
-            self.assertEqual(result, {})
-            # mock_extract.assert_called_once()
+        self.processor._transaction_data = {"field1": "value1"}
+        self.processor._app_consumer_id = "app_id_1"
+        self.processor._id_service = "service_1"
+        self.processor._list_app_consumers = ["app_id_1"]
+        
+        # Verificar excepción
+        with self.assertRaises(NoVariablesConfiguredError):
+            self.processor.extract()

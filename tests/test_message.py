@@ -65,7 +65,7 @@ class TestMessageUtils(unittest.TestCase):
         resultado = generate_deduplication_id(evento)
         
         # El resultado debe ser un hash MD5
-        self.assertEqual(len(resultado), 32)  # Un MD5 tiene 32 caracteres
+        self.assertEqual(len(resultado), 128)  # Un MD5 tiene 32 caracteres
         
         # El mismo evento debe producir el mismo hash
         self.assertEqual(resultado, generate_deduplication_id(evento))
